@@ -1,0 +1,96 @@
+        JWT service
+A JWT service is a system or framework that manages the creation, validation, and handling of JSON Web Tokens (JWTs) for authentication and authorization purposes
+
+        JWT (JSON Web Token)
+A JWT (JSON Web Token) secret in Node.js is a cryptographically secure string used to sign and verify JWTs, ensuring the integrity and authenticity of the tokens.
+This secret acts as the master key for the application's authentication system, and if it is weak or exposed, attackers can forge tokens, impersonate users, or gain unauthorized access.
+
+        Crypto
+Crypto is part of Node.js core modules (you don’t need to install it).
+
+It provides cryptographic functionality like:
+Hashing (e.g., SHA256, MD5)
+Encryption & Decryption (AES, RSA, etc.)
+Generating random values (e.g., secure tokens, IDs)
+Signing & verifying data
+
+
+
+     JWT Service
+A JWT service is a system or framework that manages JSON Web Tokens (JWTs) for authentication and authorization.  
+
+***** JWT (JSON Web Token) Secret
+The secret is a string stored in .env used to **sign and verify JWTs**.  
+
+
+ ***** Crypto Module
+crypto is a **Node.js core module** providing cryptographic functionality.  
+
+Uses in this project:
+- **Password Hashing:** Convert plain passwords to hashed strings.
+- **Data Security:** Signing or encrypting sensitive data.
+
+---
+
+***** Express Middleware
+Middleware functions in Express run **before route handlers**.  
+
+- authMiddleware.js verifies JWT tokens.
+- Adds req.userId to the request for use in API routes.
+- Responds with 400 if the token is invalid or missing.
+
+        API Routes
+
+***** Auth Routes (/auth)
+- **POST /auth/register:** Create new user, hash password, create default organisation, return JWT.
+- **POST /auth/login:** Authenticate user, hash password, return JWT if valid.
+
+*****Protected Routes (/api)
+- Require `Authorization: Bearer <token>` header.
+- **GET /api/users/:id:** Get user details if authorized.
+- **GET /api/organisations:** List all organisations user belongs to.
+- **POST /api/organisations:** Create a new organisation.
+- **POST /api/organisations/:orgId/users:** Add a user to an organisation.
+- **GET /api/organisations/:orgId:** Get organisation details.
+
+***** Migration Route (/migrate)
+- Drops and recreates tables:
+  - users
+  - organisation
+  - organisation_user
+- **Warning:** Deletes all existing data.
+
+
+*****Environment Variables (.env)
+Variables required 
+
+PORT - Server port
+DB_HOST
+DB_USER
+DB_PASSWORD
+DB_NAME
+DB_PORT - PostgreSQL connection
+JWT_SECRET - Secret key to sign JWT tokens
+
+
+***** Error Handling
+- Middleware handles errors globally.
+- Routes return **status codes**:
+  - 200 - Success
+  - 201 - Resource created
+  - 400 - Bad request
+  - 401 - Unauthorized
+  - 404 - Not found
+  - 422 - Validation errors
+
+***** Password Hashing
+- Uses `crypto.createHash('md5')` to hash passwords.
+
+
+***** How Components Works
+1. User sends request (login/register/API call)
+2. Middleware checks JWT (if protected route)
+3. DB queries are executed via `Database.js`
+4. Passwords are hashed using `crypto`
+5. JWT token is generated/verified using `JWT.js`
+6. Server responds with JSON data
