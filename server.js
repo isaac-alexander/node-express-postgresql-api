@@ -1,7 +1,7 @@
 const express = require('express');
 const apiRoute = require('./routes/api')
 const authRoute = require('./routes/auth')
-const loggedIn = require('./middleware/auth_middleware')
+const loggedIn = require('./middleware/authMiddleware')
 const migrateRoute = require('./routes/migrate')
 require('dotenv').config();
 
