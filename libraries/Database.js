@@ -24,15 +24,13 @@ class Database {
     }
 
     async query(text, params) {
-        this.client = await this.pool.connect();
-        const res = await this.client.query(text, params);
-        await this.close();
-        return res;
-    }
-
-    async close() {
-        await this.client.end();
-        console.log('Closed database connection');
+        const client = await this.pool.connect();
+        try {
+            const res = await client.query(text, params);
+            return res;
+        } finally {
+            client.release(); // ✅ release instead of closing pool
+        }
     }
 }
 
