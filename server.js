@@ -13,9 +13,9 @@ const port = process.env.PORT;
 app.use(express.json());
 
 // Use routes
-app.use('/api', loggedIn, apiRoute);
-app.use('/auth', authRoute);
 app.use('/migrate', migrateRoute);
+app.use('/auth', authRoute);
+app.use('/api', loggedIn, apiRoute);
 
 app.get("/", (req, res) => {
     res.status(200).json({
