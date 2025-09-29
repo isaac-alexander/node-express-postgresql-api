@@ -53,27 +53,27 @@ router.post("/register", async (req, res) => {
         hashedPassword,
         phone || ""
     ])
-        .then(async () => {
-            const userid = await (await db.query(`SELECT userId as userid from users where email=$1`, [email])).rows[0]
+        .then(async () => { // remove .then use async await
+            const user = (await db.query(`SELECT userId as userid from users where email=$1`, [email])).rows[0]
 
 
             await db.query(`
                 INSERT INTO organisation(orgid,name,owner,description) 
                 values($1,$2,$1,$3)`, [
-                userid.userid,
+                user.userid,
                 `${firstName}'s Organisation`,
                 ""
             ]);
             await db.query(`
                 INSERT INTO organisation_user(orgid,userid) 
                 values($1,$1)`, [
-                userid.userid
+                user.userid
             ]);
 
 
 
             const token = await jwt.generateToken({
-                userId: userid.userid
+                userId: user.userid
             })
 
             return res.status(201).json({
@@ -82,7 +82,7 @@ router.post("/register", async (req, res) => {
                 "data": {
                     "accessToken": token,
                     "user": {
-                        "userId": "" + userid.userid,
+                        "userId": "" + user.userid,
                         "firstName": firstName,
                         "lastName": lastName,
                         "email": email,
@@ -101,6 +101,7 @@ router.post("/register", async (req, res) => {
             )
         })
 })
+
 router.post("/login", async (req, res) => {
     const { email, password } = req.body
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !password || password.length == 0) {
