@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../libraries/Database')
+
 router.get("/users/:id", async (req, res) => {
     const { id } = req.params
     const userId = req.userId
@@ -45,6 +46,7 @@ router.get("/users/:id", async (req, res) => {
         })
     }
 })
+
 router.get("/organisations", async (req, res) => {
     const userId = req.userId
     let record = await db.query(`
@@ -83,6 +85,7 @@ router.get("/organisations", async (req, res) => {
         })
     }
 })
+
 router.post("/organisations", async (req, res) => {
     const userId = req.userId
     const { name, description } = req.body
@@ -139,6 +142,7 @@ router.post("/organisations", async (req, res) => {
         })
     }
 })
+
 router.post("/organisations/:orgId/users", async (req, res) => {
     const { orgId } = req.params
     const { userId } = req.body
@@ -169,6 +173,7 @@ router.post("/organisations/:orgId/users", async (req, res) => {
     })
 
 })
+
 router.get("/organisations/:orgId", async (req, res) => {
     // const userId = req.userId
     const { orgId } = req.params
@@ -196,4 +201,5 @@ router.get("/organisations/:orgId", async (req, res) => {
     }
 
 })
+
 module.exports = router;
